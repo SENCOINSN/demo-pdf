@@ -1,15 +1,15 @@
 package com.gl.si;
 
+import com.gl.si.dto.ProductRequest;
 import com.gl.si.model.Product;
 import com.gl.si.notifications.EmailService;
 import com.gl.si.services.PdfGeneratorService;
+import com.gl.si.services.ProductService;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,10 +20,12 @@ public class ProductController {
 
     private final PdfGeneratorService pdfGeneratorService;
     private final EmailService emailService;
+    private final ProductService productService;
 
-    public ProductController(PdfGeneratorService pdfGeneratorService, EmailService emailService) {
+    public ProductController(PdfGeneratorService pdfGeneratorService, EmailService emailService, ProductService productService) {
         this.pdfGeneratorService = pdfGeneratorService;
         this.emailService = emailService;
+        this.productService = productService;
     }
 
     @GetMapping("/pdf")
@@ -40,6 +42,11 @@ public class ProductController {
         byte[] pdfBytes = pdfGeneratorService.generatePdf(getSampleProducts());
         emailService.sendRapportPdf("seyeadam28@gmail.com", "Rapport produits", "Voici le rapport des produits", pdfBytes);
         return "Email sent successfully";
+    }
+
+    @PostMapping("/create")
+    public Product createProduct(@RequestBody ProductRequest productRequest) {
+        return productService.createProduct(productRequest);
     }
 
     private List<Product> getSampleProducts() {
