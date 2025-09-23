@@ -40,7 +40,7 @@ public class ProductController {
     @GetMapping("/send-email")
     public String sendRapport() throws IOException, MessagingException {
         byte[] pdfBytes = pdfGeneratorService.generatePdf(getSampleProducts());
-        emailService.sendRapportPdf("seyeadam28@gmail.com", "Rapport produits", "Voici le rapport des produits", pdfBytes);
+        emailService.sendEmailRapportPdfAsync("seyeadam28@gmail.com", "Rapport produits", "Voici le rapport des produits", pdfBytes);
         return "Email sent successfully";
     }
 
